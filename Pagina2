@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Janela Interativa</title>
+    <style>
+        body {
+            background-color: #006400; /* Verde escuro */
+            font-family: Arial, sans-serif;
+            color: black;
+            text-align: center;
+        }
+        .question-box {
+            background-color: white;
+            padding: 20px;
+            margin: 20px auto;
+            width: 300px;
+            border-radius: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .welcome-banner {
+            background-color: red;
+            color: white;
+            padding: 10px;
+            margin: 20px auto;
+            width: 300px;
+            border-radius: 10px;
+        }
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem Vindo</h1>
+    <div class="question-box" id="questionBox">
+        <p>Qual o seu nome?</p>
+        <input type="text" id="nameInput">
+        <button onclick="checkName()">Enviar</button>
+    </div>
+    <div class="welcome-banner hidden" id="welcomeBanner">
+        <p>Bem vindo, você é amigo da Ana. Acesso liberado</p>
+    </div>
+    <div class="confetti hidden" id="confetti"></div>
+    <script>
+        function checkName() {
+            const name = document.getElementById('nameInput').value;
+            if (name === 'Daniel') {
+                document.getElementById('questionBox').classList.add('hidden');
+                document.getElementById('welcomeBanner').classList.remove('hidden');
+                document.getElementById('confetti').classList.remove('hidden');
+            } else {
+                alert('Nome incorreto. Tente novamente.');
+            }
+        }
+
+        let score = 0;
+        let attempts = 0;
+        let isDragging = false;
+
+        function startDrag(event) {
+            isDragging = true;
+            document.addEventListener('mousemove', drag);
+        }
+
+        function stopDrag(event) {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            checkGoal(event);
+        }
+
+        function drag(event) {
+            if (isDragging) {
+                const confetti = document.getElementById('confetti');
+                confetti.style.left = event.clientX - confetti.offsetWidth / 2 + 'px';
+                confetti.style.top = event.clientY - confetti.offsetHeight / 2 + 'px';
+            }
+        }
+
+        function checkGoal(event) {
+            attempts++;
+            const confetti = document.getElementById('confetti');
+            const rect = confetti.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            if (x > 50 && x < 150 && y > 20 && y < 80) {
+                score++;
+            }
+            if (attempts === 5) {
+                if (score >= 4) {
+                    showConfetti();
+                    alert('Parabéns!');
+                } else {
+                    alert('Tente outra vez');
+                }
+                score = 0;
+                attempts = 0;
+            }
+        }
+
+        function showConfetti() {
+            const confetti = document.getElementById('confetti');
+            confetti.classList.remove('hidden');
+            setTimeout(() => {
+                confetti.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
